@@ -3,6 +3,7 @@ import {
   ipcMain,
   IpcMainInvokeEvent,
   ipcRenderer,
+  shell,
 } from "electron";
 import type { IPCWrapperForFunction, Launcher } from "../../src/types";
 import { spawn as launch } from "child_process";
@@ -12,6 +13,7 @@ enum IPC {
   launch = "launch",
   env_castlestorypath = "env_castlestorypath",
   os_platform = "os_platform",
+  openExternal = "openExternal",
 }
 
 const getEnvCastleStoryPath = () => process.env.CASTLE_STORY_DIRECTORY;
@@ -48,6 +50,7 @@ const triples = [
   wrapWithIpc(IPC.launch, launch),
   wrapWithIpc(IPC.env_castlestorypath, getEnvCastleStoryPath),
   wrapWithIpc(IPC.os_platform, platform),
+  wrapWithIpc(IPC.openExternal, shell.openExternal),
 ];
 
 export const setup = () => {
@@ -72,6 +75,7 @@ export const preload = () => {
   preloadCheck(launcherApi, "launch", "launcherApi");
   preloadCheck(launcherApi, "env_castlestorypath", "launcherApi");
   preloadCheck(launcherApi, "os_platform", "launcherApi");
+  preloadCheck(launcherApi, "openExternal", "launcherApi");
 
   contextBridge.exposeInMainWorld("launcher", launcherApi);
 };

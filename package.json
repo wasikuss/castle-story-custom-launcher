@@ -20,7 +20,8 @@
     "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.24.0",
     "eslint-plugin-react": "^7.31.8",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "ts-pattern": "^4.0.5"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

@@ -1,3 +1,4 @@
+import { shell } from "electron";
 import { platform } from "node:os";
 import { spawn as launch } from "child_process";
 
@@ -10,6 +11,7 @@ type Launcher = {
   launch: IPCWrapperForFunction<typeof launch>;
   env_castlestorypath: IPCWrapperForFunction<() => string>;
   os_platform: IPCWrapperForFunction<typeof platform>;
+  openExternal: IPCWrapperForFunction<typeof shell["openExternal"]>; 
 }
 
 declare global {
