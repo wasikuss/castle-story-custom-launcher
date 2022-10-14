@@ -184,78 +184,71 @@ const LaunchPanelField: React.FC<LaunchPanelFieldProps> = ({
   );
 }
 
-const getCastleStoryExecPath = async () => {
-  const platform = await window.launcher.os_platform();
-  const castleStoryPath = await window.launcher.env_castlestorypath();
-  const isModded = true;
-
+const getCastleStoryExecutable = (platform: string, isModded: boolean) => {
+  // TODO: Mac?
   if (isModded) {
     switch (platform) {
-      case "win32": return [castleStoryPath + "/Castle Story.exe"];
-      case "linux": return ["/bin/sh", castleStoryPath, castleStoryPath + "/run_bepinex.sh"];
-      default: return [castleStoryPath + "/Castle Story.exe"];
+      case "win32": return "Castle Story.exe";
+      case "linux": return "run_bepinex.sh";
+      default: return "Castle Story.exe";
     }
   }
 
+  // TODO: Mac?
   switch (platform) {
-    case "win32": return [castleStoryPath + "/Castle Story.exe"];
-    case "linux": return [castleStoryPath + "/Castle Story"];
-    default: return [castleStoryPath + "/Castle Story.exe"];
+    case "win32": return "Castle Story.exe";
+    case "linux": return "Castle Story";
+    default: return "Castle Story.exe";
   }
-
 }
+
 const launchCastleStory = async (
   resolution: string,
   windowMode: string,
   monitor = 0
 ) => {
-  const [pathExec, ...prefix] = await getCastleStoryExecPath();
+  const platform = await window.launcher.os_platform();
+  const isModded = false;
+  const castleStoryPath = await window.launcher.env_castlestorypath();
+  const executableName = getCastleStoryExecutable(platform, isModded);
   const [width, height] = resolution.split("x");
   const fullscreen = windowMode === "fullscreen";
   const borderless = windowMode === "borderless";
 
+  const gameParams: string[] = [
+    "-screen-width", `${width}`,
+    "-screen-height", `${height}`,
+    "-screen-fullscreen", `${fullscreen}`,
+    "-screen-borderless", `${borderless}`,
+    "-adapter", `${monitor}`
+  ];
+
+  const cwd = castleStoryPath;
+
   try {
-    switch (pathExec) {
-      case "/bin/sh":
-        // TODO: make this mess cleaner, awaiting merge of https://github.com/BepInEx/BepInEx/pull/496
-        // eslint-disable-next-line no-case-declarations
-        const [cwd, actualPath] = prefix;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        // const params = ["echo '",
-        //   "-screen-width", width,
-        //   "-screen-height", height,
-        //   "-screen-fullscreen", JSON.stringify(fullscreen),
-        //   "-screen-borderless", JSON.stringify(borderless),
-        //   "-adapter", JSON.stringify(monitor),
-        //   "'"
-        // ].join(" ");
-        await window.launcher.launch(
-          pathExec, // [
-          [ actualPath, "", "-screen-width", width, "-screen-height", height ], // , "-screen-height", height
-          // , "-screen-width", width,
-          // "-screen-height", height,
-          // "-screen-fullscreen", JSON.stringify(fullscreen),
-          // "-screen-borderless", JSON.stringify(borderless),
-          // "-adapter", JSON.stringify(monitor)],
-          // ]
-          {
-            detached: true,
-            cwd            
-          });
-        break;
-      default:
-        await window.launcher.launch(
-          pathExec, [
-          ...(prefix ?? []),
-          "-screen-width", width,
-          "-screen-height", height,
-          "-screen-fullscreen", JSON.stringify(fullscreen),
-          "-screen-borderless", JSON.stringify(borderless),
-          "-adapter", JSON.stringify(monitor)
-        ], {
-          detached: true
-        });
+    if (platform === "linux" && isModded) {
+      return await window.launcher.launch(
+        "/bin/sh",
+        [
+          executableName,
+          "", // skipping the first parameter for BepInEx
+          ...gameParams
+        ],
+        {
+          detached: true,
+          cwd
+        }
+      );
     }
+
+    return await window.launcher.launch(
+      `${cwd}/${executableName}`,
+      gameParams,
+      {
+        detached: true,
+        cwd
+      }
+    );
   } catch (err) {
     console.error("Not being able to get handle is expected", err);
   }
@@ -293,7 +286,7 @@ export const LaunchPanel = () => {
           options={{
             "window": "Windowed",
             "borderless": "Borderless",
-            "fullscreen_borderless": "Borderless (Fullscreen)",
+            "fullscreen_borderless": "Borderless (Fullscreen) - Requires a mod",
             "fullscreen": "Fullscreen",
           }}
         />
@@ -317,23 +310,3 @@ export const LaunchPanel = () => {
     </>
   )
 };
-
-// cd /home/daniel/.local/share/Steam/steamapps/common/Castle Story/run_bepinex.sh
-// /bin/sh "/home/daniel/.local/share/Steam/steamapps/common/Castle Story/run_bepinex.sh" -- "-screen-width 1000"
-
-
-// if (os.platform() == "darwin") {
-//   console.log("ON EST SUR MAC");
-//   LaunchApp(__dirname + '/../../../../../../Castle Story.app/Contents/MacOS/Castle Story', width, height,fullscreen,monitor);
-// } else if (os.platform() == "win32") {
-//     console.log('ON EST SUR WINDOWS');
-//     LaunchApp(__dirname + '/../../../../Castle Story.exe', width, height,fullscreen,monitor);
-// } else if (os.platform() == "linux") {
-//     console.log("ON EST SUR LINUX");
-//     LaunchApp(__dirname + '/../../../../Castle Story', width, height,fullscreen,monitor);
-// } else {
-//     console.log("NO SÉ");
-//     LaunchApp(__dirname + '/../../../../../../Castle Story.app/Contents/MacOS/Castle Story', width, height,fullscreen,monitor);
-// }
-
-
