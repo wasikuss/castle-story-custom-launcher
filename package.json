@@ -1,9 +1,9 @@
 {
-  "name": "electron-vite-react",
-  "productName": "Electron",
+  "name": "castle-story-custom-launcher",
+  "productName": "CSCL",
   "private": true,
   "version": "2.1.0",
-  "description": "Vite React Electron boilerplate.",
+  "description": "Castle Story Custom Launcher",
   "author": "Daniel Mizerski",
   "contributors": [],
   "repository": {

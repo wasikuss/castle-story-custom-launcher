@@ -5,15 +5,17 @@ import {
   ipcRenderer,
   shell,
 } from "electron";
-import type { IPCWrapperForFunction, Launcher } from "../../src/types";
-import { spawn as launch } from "child_process";
 import { platform } from "os";
+import { spawn as launch } from "child_process";
+import type { IPCWrapperForFunction, Launcher } from "../../src/types";
+import { getSupportedResolutins } from "./getSupportedResolutions";
 
 enum IPC {
   launch = "launch",
   env_castlestorypath = "env_castlestorypath",
   os_platform = "os_platform",
   openExternal = "openExternal",
+  getSupportedResolutions = "getSupportedResolutions",
 }
 
 const getEnvCastleStoryPath = () => process.env.CASTLE_STORY_DIRECTORY;
@@ -51,6 +53,7 @@ const triples = [
   wrapWithIpc(IPC.env_castlestorypath, getEnvCastleStoryPath),
   wrapWithIpc(IPC.os_platform, platform),
   wrapWithIpc(IPC.openExternal, shell.openExternal),
+  wrapWithIpc(IPC.getSupportedResolutions, getSupportedResolutins),
 ];
 
 export const registerLauncherNamespace = () => {
@@ -76,6 +79,7 @@ export const preload = () => {
   preloadCheck(launcherApi, "env_castlestorypath", "launcherApi");
   preloadCheck(launcherApi, "os_platform", "launcherApi");
   preloadCheck(launcherApi, "openExternal", "launcherApi");
+  preloadCheck(launcherApi, "getSupportedResolutions", "launcherApi");
 
   contextBridge.exposeInMainWorld("launcher", launcherApi);
 };

@@ -132,7 +132,7 @@ const LaunchPanelFieldOption = <V extends string>({
 
 type LaunchPanelFieldProps<AvailableValues extends string> = {
   label: string;
-  options: Record<AvailableValues, string>;
+  options: Record<AvailableValues, string> | Promise<Record<AvailableValues, string>>;
   expanded: string;
   setExpanded: React.Dispatch<string>;
   selectedOption: AvailableValues;
@@ -140,12 +140,18 @@ type LaunchPanelFieldProps<AvailableValues extends string> = {
 };
 const LaunchPanelField = <V extends string>({
   label,
-  options,
+  options: _options,
   selectedOption,
   expanded: _expanded,
   setExpanded,
   setSelectedOption
 }: LaunchPanelFieldProps<V>) => {
+  const [options, setOptions] = React.useState({} as Record<V, string>);
+  React.useEffect(() => {
+    (async () => {
+      setOptions(await _options);
+    })()
+  });
   const selectedOptionLabel = options[selectedOption] ?? selectedOption;
   // const selectedOptionIsInOptions = selectedOption in options;
   const expanded = _expanded === label;
@@ -216,13 +222,13 @@ const launchCastleStory = async (
   const fullscreen = windowMode === "fullscreen";
   const borderless = windowMode === "borderless";
 
+  // TODO: rewrite this part
   const gameParams: string[] = [
-    "-popupwindow",
+    "",
     "-screen-width", `${width}`,
     "-screen-height", `${height}`,
     "-screen-fullscreen", `${fullscreen}`,
-    // "-window-mode", "borderless",
-    // ...(borderless ? ["-window-mode", "borderless"] : []),
+    borderless ? "-popupwindow" : "",
     "-adapter", `${monitor}`
   ];
 
@@ -281,6 +287,16 @@ export const LaunchPanel = () => {
   const [resolution, setResolution] = useStoredState("lastResolution");
   const [windowMode, setWindowMode] = useStoredState("lastWindowMode");
   const [skipLauncher, setSkipLauncher] = useStoredState("lastSkipLauncher");
+  const supportedResolutions = React.useMemo(() => {
+    return window.launcher
+      .getSupportedResolutions()
+      .then(resolutions => resolutions
+        .reduce<Record<string, string>>((result, resolution) => ({
+          ...result,
+          [`${resolution.width}x${resolution.height}`]: `${resolution.width}x${resolution.height}`
+        }), {})
+      )
+  }, []);
 
   return (
     <>
@@ -292,12 +308,7 @@ export const LaunchPanel = () => {
           setExpanded={setExpanded}
           selectedOption={resolution}
           setSelectedOption={setResolution}
-          options={{
-            "800x600": "800x600",
-            "1024x768": "1024x768",
-            "2560x1300": "2560x1300",
-            "5120x1440": "5120x1440",
-          }}
+          options={supportedResolutions}
         />
         <LaunchPanelField
           label="Window"
@@ -308,7 +319,6 @@ export const LaunchPanel = () => {
           options={{
             "window": "Windowed",
             "borderless": "Borderless",
-            "fullscreen_borderless": "Borderless (Fullscreen) - Requires a mod",
             "fullscreen": "Fullscreen",
           }}
         />

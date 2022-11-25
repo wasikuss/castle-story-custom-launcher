@@ -1,6 +1,7 @@
 import { shell } from "electron";
 import { platform } from "node:os";
 import { spawn as launch } from "child_process";
+import { Resolution } from "shared/resolution";
 
 type LaunchParams = Parameters<typeof launch>;
 
@@ -11,7 +12,8 @@ type Launcher = {
   launch: IPCWrapperForFunction<typeof launch>;
   env_castlestorypath: IPCWrapperForFunction<() => string>;
   os_platform: IPCWrapperForFunction<typeof platform>;
-  openExternal: IPCWrapperForFunction<typeof shell["openExternal"]>; 
+  openExternal: IPCWrapperForFunction<typeof shell["openExternal"]>;
+  getSupportedResolutions: IPCWrapperForFunction<() => Resolution[]>;
 }
 
 declare global {

@@ -4,7 +4,8 @@ import type { StoreType } from "../../shared/store";
 
 export const store = new Store<StoreType>({
   defaults: {
-    lastResolution: "",
+    userResolutions: {},
+    lastResolution: "1024x768",
     lastSkipLauncher: "never",
     lastWindowMode: "window",
   }
