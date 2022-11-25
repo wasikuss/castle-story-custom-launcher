@@ -53,7 +53,7 @@ const triples = [
   wrapWithIpc(IPC.openExternal, shell.openExternal),
 ];
 
-export const setup = () => {
+export const registerLauncherNamespace = () => {
   triples.forEach(([, , setupPart]) => setupPart());
 };
 

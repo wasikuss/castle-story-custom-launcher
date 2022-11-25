@@ -1,6 +1,6 @@
 import { preload } from "../main/registerLauncherNamespace";
-
 preload();
+import "./electron-store";
 
 function domReady(
   condition: DocumentReadyState[] = ["complete", "interactive"],

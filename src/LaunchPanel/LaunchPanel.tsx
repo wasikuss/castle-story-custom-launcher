@@ -5,6 +5,7 @@ import { primaryColor } from "@/colors";
 
 import { PlayButton } from "./PlayButton";
 import playArrowPng from "/link/castlestory-images/play-arrow.png";
+import { store, StoreType } from "@/Store";
 
 const LaunchPanelWrapper = styled.div`
   /* From https://css.glass */
@@ -113,15 +114,15 @@ const LaunchPanelFieldBleedBottom = styled.div`
   box-shadow: 0 2px 1px 0px black;
 `;
 
-type LaunchPanelFieldOptionProps = {
+type LaunchPanelFieldOptionProps<AvailableValues extends string> = {
   label: string;
-  value: string;
+  value: AvailableValues;
   onClick: React.MouseEventHandler<HTMLDivElement> | undefined;
 };
-const LaunchPanelFieldOption: React.FC<LaunchPanelFieldOptionProps> = ({
+const LaunchPanelFieldOption = <V extends string>({
   label,
   onClick
-}) => {
+}: LaunchPanelFieldOptionProps<V>) => {
   return (
     <LaunchPanelFieldContainer onClick={onClick}>
       <LaunchPanelFakeSelect>{label}</LaunchPanelFakeSelect>
@@ -129,22 +130,22 @@ const LaunchPanelFieldOption: React.FC<LaunchPanelFieldOptionProps> = ({
   )
 };
 
-type LaunchPanelFieldProps = {
+type LaunchPanelFieldProps<AvailableValues extends string> = {
   label: string;
-  options: Record<string, string>;
+  options: Record<AvailableValues, string>;
   expanded: string;
   setExpanded: React.Dispatch<string>;
-  selectedOption: string;
-  setSelectedOption: React.Dispatch<string>;
+  selectedOption: AvailableValues;
+  setSelectedOption: React.Dispatch<AvailableValues>;
 };
-const LaunchPanelField: React.FC<LaunchPanelFieldProps> = ({
+const LaunchPanelField = <V extends string>({
   label,
   options,
   selectedOption,
   expanded: _expanded,
   setExpanded,
   setSelectedOption
-}) => {
+}: LaunchPanelFieldProps<V>) => {
   const selectedOptionLabel = options[selectedOption] ?? selectedOption;
   // const selectedOptionIsInOptions = selectedOption in options;
   const expanded = _expanded === label;
@@ -166,14 +167,14 @@ const LaunchPanelField: React.FC<LaunchPanelFieldProps> = ({
         {
           Object
             .entries(options)
-            .filter(([value,]) => value !== selectedOption)
-            .map(([value, label]) => (
+            .filter(([optionValue,]) => optionValue !== selectedOption)
+            .map(([optionValue, optionLabel]) => (
               <LaunchPanelFieldOption
-                key={value}
-                label={label}
-                value={value}
+                key={optionValue}
+                label={optionLabel as string}
+                value={optionValue as V}
                 onClick={() => {
-                  setSelectedOption(value);
+                  setSelectedOption(optionValue as V);
                   setExpanded("");
                 }}
               />
@@ -216,10 +217,12 @@ const launchCastleStory = async (
   const borderless = windowMode === "borderless";
 
   const gameParams: string[] = [
+    "-popupwindow",
     "-screen-width", `${width}`,
     "-screen-height", `${height}`,
     "-screen-fullscreen", `${fullscreen}`,
-    "-screen-borderless", `${borderless}`,
+    // "-window-mode", "borderless",
+    // ...(borderless ? ["-window-mode", "borderless"] : []),
     "-adapter", `${monitor}`
   ];
 
@@ -254,11 +257,30 @@ const launchCastleStory = async (
   }
 }
 
+const useStoredState = <K extends keyof StoreType>(key: K): [
+  StoreType[K],
+  (value: StoreType[K]) => void
+] => {
+  type T = StoreType[K];
+  const storedValue = store.get(key);
+  const [state, _setState] = React.useState<T>(storedValue);
+
+  const setState = React.useCallback((value: T) => {
+    _setState(value);
+    store.set(key, value);
+  }, [_setState]);
+
+  return [state, setState] as [
+    StoreType[K],
+    (value: StoreType[K]) => void
+  ];
+}
+
 export const LaunchPanel = () => {
   const [expanded, setExpanded] = React.useState("");
-  const [resolution, setResolution] = React.useState("2560x1300");
-  const [windowMode, setWindowMode] = React.useState("borderless");
-  const [skipLauncher, setSkipLauncher] = React.useState("always");
+  const [resolution, setResolution] = useStoredState("lastResolution");
+  const [windowMode, setWindowMode] = useStoredState("lastWindowMode");
+  const [skipLauncher, setSkipLauncher] = useStoredState("lastSkipLauncher");
 
   return (
     <>

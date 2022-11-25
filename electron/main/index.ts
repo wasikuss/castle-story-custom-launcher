@@ -1,13 +1,3 @@
-// The built directory structure
-//
-// ├─┬ dist-electron
-// │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
-// ├─┬ dist
-// │ └── index.html    > Electron-Renderer
-//
 import { config } from "dotenv";
 config();
 
@@ -17,12 +7,14 @@ process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, "../public");
 
+import "./electron-store";
 
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import { release } from "os";
 import { join } from "path";
-import { setup } from "./registerLauncherNamespace";
-setup();
+
+import { registerLauncherNamespace } from "./registerLauncherNamespace";
+registerLauncherNamespace();
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
