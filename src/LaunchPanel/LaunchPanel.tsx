@@ -106,6 +106,12 @@ const LaunchPanelFieldBleedBottom = styled.div`
   bottom: 0;
   left: 0;
 
+  max-height: 200px;
+  overflow: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   transform: translateY(100%);
 
   background: ${primaryColor}aa;
