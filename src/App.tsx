@@ -15,6 +15,19 @@ const AppContainer = styled.div`
   background: url(${backgroundPng}) no-repeat;
 `;
 
+const GameIsRunning = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 2rem;
+  background: ${primaryColor};
+  border: 5px solid black;
+  box-shadow: 0 -5px 0px 0px #00000066 inset;
+`;
+
 const NewsPanel = styled.div`
   /* From https://css.glass */
   background: ${primaryColor}cc;
@@ -70,17 +83,39 @@ const NewsPanelVersionTitle = styled.div`
 `;
 
 const App: React.FC = () => {
+  const [gameRunning, setGameRunning] = React.useState(false);
+
+  React.useEffect(() => {
+    window.game.start(() => {
+      setGameRunning(true);
+    });
+    window.game.stop(() => {
+      setGameRunning(false);
+    });
+  }, [setGameRunning]);
+
+  if (!gameRunning) {
+    return (
+      <AppContainer>
+        <Heading />
+        <NewsPanel>
+          <NewsPanelVersionLabel>Our latest update is</NewsPanelVersionLabel>
+          <NewsPanelVersionTitle>Version 1.1</NewsPanelVersionTitle>
+          <NewsPanelBleed>
+            <NewsPanelVideo src={castleStoryMp4} controls />
+          </NewsPanelBleed>
+        </NewsPanel>
+        <LaunchPanel />
+      </AppContainer>
+    )
+  }
+
   return (
     <AppContainer>
       <Heading />
-      <NewsPanel>
-        <NewsPanelVersionLabel>Our latest update is</NewsPanelVersionLabel>
-        <NewsPanelVersionTitle>Version 1.1</NewsPanelVersionTitle>
-        <NewsPanelBleed>
-          <NewsPanelVideo src={castleStoryMp4} controls />
-        </NewsPanelBleed>
-      </NewsPanel>
-      <LaunchPanel />
+      <GameIsRunning>
+        Game is running
+      </GameIsRunning>
     </AppContainer>
   )
 }

@@ -7,14 +7,16 @@ process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, "../public");
 
-import "./electron-store";
+import { registerMainStoreEvents } from "./electron-store";
+import { windowRef } from "./windowRef";
+registerMainStoreEvents();
 
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import { release } from "os";
 import { join } from "path";
 
 import { registerLauncherNamespace } from "./registerLauncherNamespace";
-registerLauncherNamespace();
+registerLauncherNamespace(windowRef);
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
@@ -27,14 +29,13 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0);
 }
 
-let win: BrowserWindow | null = null;
 // Here, you can also use other preload
 const preload = join(__dirname, "../preload/index.js");
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, "index.html");
 
-async function createWindow() {
-  win = new BrowserWindow({
+function createWindow() {
+  windowRef.current = new BrowserWindow({
     title: "Castle Story",
     icon: join(process.env.PUBLIC, "favicon.svg"),
     webPreferences: {
@@ -54,22 +55,22 @@ async function createWindow() {
     resizable: false
   });
 
-  win.webContents.addWorkSpace
+  // win.webContents.addWorkSpace
 
   if (app.isPackaged) {
-    win.loadFile(indexHtml);
+    windowRef.current.loadFile(indexHtml);
   } else {
-    win.loadURL(url);
+    windowRef.current.loadURL(url);
     // win.webContents.openDevTools()
   }
 
   // Test actively push message to the Electron-Renderer
-  win.webContents.on("did-finish-load", () => {
-    win?.webContents.send("main-process-message", new Date().toLocaleString());
+  windowRef.current.webContents.on("did-finish-load", () => {
+    windowRef.current?.webContents.send("main-process-message", new Date().toLocaleString());
   });
 
   // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({ url }) => {
+  windowRef.current.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
@@ -78,15 +79,15 @@ async function createWindow() {
 app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
-  win = null;
+  windowRef.current = null;
   if (process.platform !== "darwin") app.quit();
 });
 
 app.on("second-instance", () => {
-  if (win) {
+  if (windowRef.current) {
     // Focus on the main window if the user tried to open another
-    if (win.isMinimized()) win.restore();
-    win.focus();
+    if (windowRef.current.isMinimized()) windowRef.current.restore();
+    windowRef.current.focus();
   }
 });
 

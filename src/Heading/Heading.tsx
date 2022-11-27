@@ -26,14 +26,14 @@ const TitleBarContainer = styled.div`
   height: 100px;
 `;
 
-const TitleBar = styled.div`
+export const TitleBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
 `;
 const TitleBarButtonGroup = styled(TitleBar)``;
 
-const TitleBarImageButtonContainer = styled.div`
+export const TitleBarImageButtonContainer = styled.div`
   user-select: none;
   -webkit-app-region: no-drag;
 
@@ -50,9 +50,9 @@ const TitleBarImageButtonContainer = styled.div`
     background: ${accentColor};
   }
 `;
-const TitleBarImageButton = styled.img``;
+export const TitleBarImageButton = styled.img``;
 
-const TitleBarHighlighted = styled.div`
+export const TitleBarHighlighted = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -66,7 +66,7 @@ const TitleBarHighlighted = styled.div`
   justify-content: flex-end;
 `;
 
-const TitleBarHighlightedButton = styled.div`
+export const TitleBarHighlightedButton = styled.div`
   user-select: none;
   -webkit-app-region: no-drag;
 
@@ -125,6 +125,7 @@ const RenderClickable = (Component: React.FC<PropsWithChildren<{ onClick?: OnCli
 export const Heading = () => {
   const _topButtons = React.useMemo(() => titleBarButtons.map(RenderClickable(TitleBarButton)), []);
   const _bottomButtons = React.useMemo(() => highlightedBarButtons.map(RenderClickable(TitleBarHighlightedButton)), []);
+  const { mainWindow_minimize, mainWindow_quit } = window.launcher;
 
   return (
     <>
@@ -132,10 +133,10 @@ export const Heading = () => {
       <TitleBarContainer>
         <TitleBar>
           <TitleBarButtonGroup>{_topButtons}</TitleBarButtonGroup>
-          <TitleBarImageButtonContainer>
+          <TitleBarImageButtonContainer onClick={() => mainWindow_minimize()}>
             <TitleBarImageButton src={minimizePng} />
           </TitleBarImageButtonContainer>
-          <TitleBarImageButtonContainer>
+          <TitleBarImageButtonContainer onClick={() => mainWindow_quit()}>
             <TitleBarImageButton src={closePng} />
           </TitleBarImageButtonContainer>
         </TitleBar>

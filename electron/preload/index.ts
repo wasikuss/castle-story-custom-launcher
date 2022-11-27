@@ -1,6 +1,7 @@
 import { preload } from "../main/registerLauncherNamespace";
 preload();
 import "./electron-store";
+import "./game-start-stop-events";
 
 function domReady(
   condition: DocumentReadyState[] = ["complete", "interactive"],

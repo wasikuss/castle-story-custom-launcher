@@ -26,6 +26,7 @@
     "electron-store": "8.1.0",
     "eslint": "8.24.0",
     "eslint-plugin-react": "7.31.8",
+    "react-hook-form": "^7.39.6",
     "styled-components": "5.3.6",
     "ts-pattern": "4.0.5"
   },

@@ -5,4 +5,5 @@ export type StoreType = {
   lastResolution: string;
   lastWindowMode: WindowMode;
   lastSkipLauncher: SkipLauncher;
+  lastAdapter: number;
 };

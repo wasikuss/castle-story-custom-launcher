@@ -6,6 +6,7 @@ import { primaryColor } from "@/colors";
 import { PlayButton } from "./PlayButton";
 import playArrowPng from "/link/castlestory-images/play-arrow.png";
 import { store, StoreType } from "@/Store";
+import { CustomResolutionModal } from "./CustomResolutionModal";
 
 const LaunchPanelWrapper = styled.div`
   /* From https://css.glass */
@@ -93,11 +94,30 @@ const LaunchPanelFieldImage = styled.img`
   transform: translateY(-50%);
 `;
 const LaunchPanelFieldBleedTop = styled.div`
+  z-index: 11;
   position: absolute;
+  width: 100%;
   top: 0;
   left: 0;
+  padding: 1rem 0;
+  border-left: 3px solid black;
+  box-sizing: border-box;
+  min-height: 5rem;
+  height: 5rem;
+  max-height: 5rem;
+  display: flex;
+  flex-direction: row;
 
   transform: translateY(-100%);
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  background: ${primaryColor}aa;
+  backdrop-filter: blur(7.8px);
+  -webkit-backdrop-filter: blur(7.8px);
+  box-shadow: 0 -2px 1px 0px black;
 `;
 const LaunchPanelFieldBleedBottom = styled.div`
   z-index: 11;
@@ -120,6 +140,27 @@ const LaunchPanelFieldBleedBottom = styled.div`
   box-shadow: 0 2px 1px 0px black;
 `;
 
+const LaunchPanelButton = styled.div`
+  cursor: pointer;
+  height: 100%;
+  margin-left: 0.5rem;
+  padding: 0 0.5rem 0 0.5rem;
+  margin-top: -5px;
+  box-shadow: 0 0 2px 0px black;
+  background: ${primaryColor}aa;
+
+  display: flex;
+  align-items: center;
+
+  background: #FFFFFFCC;
+  border: 5px solid black;
+  box-shadow: 0 -5px 0px 0px #00000066 inset;
+
+  &:hover {
+    background: #FFFFFFEE;
+  }
+`;
+
 type LaunchPanelFieldOptionProps<AvailableValues extends string> = {
   label: string;
   value: AvailableValues;
@@ -138,6 +179,7 @@ const LaunchPanelFieldOption = <V extends string>({
 
 type LaunchPanelFieldProps<AvailableValues extends string> = {
   label: string;
+  actions?: Record<string, () => void>;
   options: Record<AvailableValues, string> | Promise<Record<AvailableValues, string>>;
   expanded: string;
   setExpanded: React.Dispatch<string>;
@@ -146,6 +188,7 @@ type LaunchPanelFieldProps<AvailableValues extends string> = {
 };
 const LaunchPanelField = <V extends string>({
   label,
+  actions = {},
   options: _options,
   selectedOption,
   expanded: _expanded,
@@ -164,9 +207,17 @@ const LaunchPanelField = <V extends string>({
 
   return (
     <LaunchPanelFieldWrapper>
-      <LaunchPanelFieldBleedTop>
-
-      </LaunchPanelFieldBleedTop>
+      {expanded && !!Object.entries(actions).length &&
+        <LaunchPanelFieldBleedTop>
+          {
+            Object
+              .entries(actions)
+              .map(([label, callback]) => (
+                <LaunchPanelButton key={label} onClick={callback}>{label}</LaunchPanelButton>
+              ))
+          }
+        </LaunchPanelFieldBleedTop>
+      }
       <LaunchPanelFieldContainer
         expanded={expanded}
         onClick={() => setExpanded(expanded ? "" : label)}
@@ -175,98 +226,28 @@ const LaunchPanelField = <V extends string>({
         <LaunchPanelFieldLabel>{label}</LaunchPanelFieldLabel>
         <LaunchPanelFakeSelect>{selectedOptionLabel}</LaunchPanelFakeSelect>
       </LaunchPanelFieldContainer>
-      {expanded && <LaunchPanelFieldBleedBottom>
-        {
-          Object
-            .entries(options)
-            .filter(([optionValue,]) => optionValue !== selectedOption)
-            .map(([optionValue, optionLabel]) => (
-              <LaunchPanelFieldOption
-                key={optionValue}
-                label={optionLabel as string}
-                value={optionValue as V}
-                onClick={() => {
-                  setSelectedOption(optionValue as V);
-                  setExpanded("");
-                }}
-              />
-            ))
-        }
-      </LaunchPanelFieldBleedBottom>}
+      {expanded &&
+        <LaunchPanelFieldBleedBottom>
+          {
+            Object
+              .entries(options)
+              .filter(([optionValue,]) => optionValue !== selectedOption)
+              .map(([optionValue, optionLabel]) => (
+                <LaunchPanelFieldOption
+                  key={optionValue}
+                  label={optionLabel as string}
+                  value={optionValue as V}
+                  onClick={() => {
+                    setSelectedOption(optionValue as V);
+                    setExpanded("");
+                  }}
+                />
+              ))
+          }
+        </LaunchPanelFieldBleedBottom>
+      }
     </LaunchPanelFieldWrapper>
   );
-}
-
-const getCastleStoryExecutable = (platform: string, isModded: boolean) => {
-  // TODO: Mac?
-  if (isModded) {
-    switch (platform) {
-      case "win32": return "Castle Story.exe";
-      case "linux": return "run_bepinex.sh";
-      default: return "Castle Story.exe";
-    }
-  }
-
-  // TODO: Mac?
-  switch (platform) {
-    case "win32": return "Castle Story.exe";
-    case "linux": return "Castle Story";
-    default: return "Castle Story.exe";
-  }
-}
-
-const launchCastleStory = async (
-  resolution: string,
-  windowMode: string,
-  monitor = 0
-) => {
-  const platform = await window.launcher.os_platform();
-  const isModded = false;
-  const castleStoryPath = await window.launcher.env_castlestorypath();
-  const executableName = getCastleStoryExecutable(platform, isModded);
-  const [width, height] = resolution.split("x");
-  const fullscreen = windowMode === "fullscreen";
-  const borderless = windowMode === "borderless";
-
-  // TODO: rewrite this part
-  const gameParams: string[] = [
-    "",
-    "-screen-width", `${width}`,
-    "-screen-height", `${height}`,
-    "-screen-fullscreen", `${fullscreen}`,
-    borderless ? "-popupwindow" : "",
-    "-adapter", `${monitor}`
-  ];
-
-  const cwd = castleStoryPath;
-
-  try {
-    if (platform === "linux" && isModded) {
-      return await window.launcher.launch(
-        "/bin/sh",
-        [
-          executableName,
-          "", // skipping the first parameter for BepInEx
-          ...gameParams
-        ],
-        {
-          detached: true,
-          cwd
-        }
-      );
-    }
-
-    return await window.launcher.launch(
-      `${cwd}/${executableName}`,
-      gameParams,
-      {
-        detached: true,
-        cwd
-      }
-    );
-  } catch (err) {
-    console.error("Not being able to get handle is expected", err);
-  }
 }
 
 const useStoredState = <K extends keyof StoreType>(key: K): [
@@ -288,8 +269,10 @@ const useStoredState = <K extends keyof StoreType>(key: K): [
   ];
 }
 
+const customResolutionModalName = "custom_resolution";
 export const LaunchPanel = () => {
   const [expanded, setExpanded] = React.useState("");
+  const [modal, setModal] = React.useState("");
   const [resolution, setResolution] = useStoredState("lastResolution");
   const [windowMode, setWindowMode] = useStoredState("lastWindowMode");
   const [skipLauncher, setSkipLauncher] = useStoredState("lastSkipLauncher");
@@ -304,8 +287,11 @@ export const LaunchPanel = () => {
       )
   }, []);
 
+  const isCustomResolutionModalVisible = modal === customResolutionModalName;
+
   return (
     <>
+      {isCustomResolutionModalVisible && <CustomResolutionModal setModal={setModal} setResolution={setResolution} />}
       <LaunchPanelWrapper>
         <LaunchPanelTitle>Settings</LaunchPanelTitle>
         <LaunchPanelField
@@ -314,6 +300,9 @@ export const LaunchPanel = () => {
           setExpanded={setExpanded}
           selectedOption={resolution}
           setSelectedOption={setResolution}
+          actions={{
+            "Add custom resolution": () => setModal(customResolutionModalName),
+          }}
           options={supportedResolutions}
         />
         <LaunchPanelField
@@ -329,7 +318,7 @@ export const LaunchPanel = () => {
           }}
         />
         <LaunchPanelField
-          label="Skip launcher"
+          label="Skip launcher (disabled)"
           expanded={expanded}
           setExpanded={setExpanded}
           selectedOption={skipLauncher}
@@ -340,11 +329,7 @@ export const LaunchPanel = () => {
           }}
         />
       </LaunchPanelWrapper>
-      <PlayButton onClick={() => launchCastleStory(
-        resolution,
-        windowMode,
-        0
-      )} />
+      <PlayButton onClick={() => window.launcher.launch()} />
     </>
   )
 };

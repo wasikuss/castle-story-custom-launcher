@@ -4,9 +4,9 @@ import styled from "styled-components";
 import playArrowPng from "/link/castlestory-images/play-arrow.png";
 
 const PlayButtonWrapper = styled.div`
-  background: #FFFFFFCC;
   backdrop-filter: blur(7.8px);
   -webkit-backdrop-filter: blur(7.8px);
+  background: #FFFFFFCC;
   border: 5px solid black;
   box-shadow: 0 -15px 0px 0px #00000066 inset;
 
