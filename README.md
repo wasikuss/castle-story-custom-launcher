@@ -9,7 +9,8 @@
 Using [Releases](https://github.com/Danielduel/castle-story-custom-launcher/releases) tab
 pick correct version - `.exe` for Windows, `.AppImage` for Linux.
 
-At this moment - trying to launch game without exactly the same setup as mine will result in error message. This release is meant to check if all dependencies for clients are bundled correctly.
+Trying to launch game will result in error message.
+This release is meant to check if all dependencies for clients are bundled correctly.
 
 ![Screenshot of 0.0.1](docs/ss.png?raw=true "Screenshot")
 
