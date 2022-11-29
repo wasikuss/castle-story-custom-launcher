@@ -1,8 +1,8 @@
+# Castle Story Custom Launcher
+
 <p align="center">
   <img src="docs/modding_community.png?raw=true" />
 </p>
-
-# Castle Story Custom Launcher
 
 ## How to download
 
@@ -10,6 +10,7 @@ Using [Releases](https://github.com/Danielduel/castle-story-custom-launcher/rele
 pick correct version - `.exe` for Windows, `.AppImage` for Linux.
 
 Trying to launch game will result in error message.
+
 This release is meant to check if all dependencies for clients are bundled correctly.
 
 ![Screenshot of 0.0.1](docs/ss.png?raw=true "Screenshot")
