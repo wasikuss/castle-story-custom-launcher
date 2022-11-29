@@ -1,5 +1,9 @@
+<p align="center">
+  <img src="docs/modding_community.png?raw=true" />
+</p>
 
-![Modding community](docs/modding_community.png?raw=true "Modding community")
+# Castle Story Custom Launcher
+
 ![Screenshot of 0.0.1](docs/ss.png?raw=true "Screenshot")
 
 ### Scope
