@@ -1,7 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./App"
-import "styles/index.css"
 
 /**
  * If you enable use of Node.js API in the Renderer-process

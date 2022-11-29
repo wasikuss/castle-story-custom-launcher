@@ -4,10 +4,6 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-		"paths": {
-			"@/*": ["src/*"],
-      "styles/*": ["src/assets/styles/*"]
-		},
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -20,10 +16,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "noImplicitAny": true
+    "noImplicitAny": true,
   },
-  "include": ["src", "shared"],
-  "exclude": ["node_modules"],
+  "include": ["src"],
+  "exclude": ["node_modules", "shared"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
 

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import styled from "styled-components";
 import { match,} from "ts-pattern";
-import { accentColor } from "@/colors";
+import { accentColor } from "../colors";
 import closePng from "/link/castlestory-images/close.png"
 import minimizePng from "/link/castlestory-images/minimize.png"
 import castleStoryLogoPng from "/link/castlestory-images/CastleStory_Logo.png"

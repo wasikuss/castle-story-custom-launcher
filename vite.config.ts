@@ -23,6 +23,7 @@ export default defineConfig({
     electron({
       include: [
         "electron",
+        "shared"
       ],
       transformOptions: {
         sourcemap: !!process.env.VSCODE_DEBUG,

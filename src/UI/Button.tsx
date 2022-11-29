@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { match } from "ts-pattern";
-import { primaryColor } from "@/colors";
+import { primaryColor } from "../colors";
 
 type ButtonVariant = "medium";
 

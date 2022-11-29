@@ -1,11 +1,11 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-import { primaryColor } from "@/colors";
+import { primaryColor } from "../colors";
 
 import { PlayButton } from "./PlayButton";
 import playArrowPng from "/link/castlestory-images/play-arrow.png";
-import { store, StoreType } from "@/Store";
+import { store, StoreType } from "../Store";
 import { CustomResolutionModal } from "./CustomResolutionModal";
 
 const LaunchPanelWrapper = styled.div`

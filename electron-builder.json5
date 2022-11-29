@@ -2,8 +2,8 @@
  * @see https://www.electron.build/configuration/configuration
  */
 {
-  appId: "YourAppID",
-  productName: "YourAppName",
+  appId: "dev.danielduel.customcastlestorylauncher",
+  productName: "Castle Story Custom Launcher",
   copyright: "Copyright © 2022 ${author}",
   asar: true,
   directories: {
@@ -16,12 +16,17 @@
   ],
   win: {
     target: [
+      // {
+      //   target: "nsis",
+      //   arch: ["x64"],
+      // },
       {
-        target: "nsis",
+        target: "portable",
         arch: ["x64"],
       },
     ],
-    artifactName: "${productName}-Windows-${version}-Setup.${ext}",
+    icon: "electron/resources/icon.ico",
+    // artifactName: "${productName}-Windows-${version}-{}.${ext}",
   },
   nsis: {
     oneClick: false,
@@ -31,10 +36,12 @@
   },
   mac: {
     target: ["dmg"],
+    icon: "electron/resources/iconset/256x256.png",
     artifactName: "${productName}-Mac-${version}-Installer.${ext}",
   },
   linux: {
     icon: "electron/resources/iconset",
+    category: "Game",
     target: ["AppImage", "deb"],
     artifactName: "${productName}-Linux-${version}.${ext}",
   },

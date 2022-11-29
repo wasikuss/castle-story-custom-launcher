@@ -1,7 +1,13 @@
 import { config } from "dotenv";
-config();
 
-process.env.DIST_ELECTRON = join(__dirname, "..");
+if (!app.isPackaged) {
+  config();
+}
+
+process.env.CASTLE_STORY_DIRECTORY = process.env.CASTLE_STORY_DIRECTORY || ".";
+process.env.DIST_ELECTRON = app.isPackaged
+  ? join(__dirname, "../..")
+  : join(__dirname, "..");
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST

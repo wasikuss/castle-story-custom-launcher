@@ -2,19 +2,24 @@
   "name": "castle-story-custom-launcher",
   "productName": "CSCL",
   "private": true,
-  "version": "2.1.0",
+  "version": "0.0.1",
   "description": "Castle Story Custom Launcher",
-  "author": "Daniel Mizerski",
-  "contributors": [],
+  "author": {
+    "name": "Daniel Mizerski",
+    "email": "goto@github.com",
+    "url": "https://github.com"
+  },
   "repository": {
     "url": "https://github.com/Danielduel/castle-story-custom-launcher"
   },
-  "email": "goto@github.com",
+  "contributors": [],
   "license": "MIT",
-  "main": "dist-electron/main/index.js",
+  "main": "dist-electron/electron/main/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder"
+    "build": "tsc && vite build && electron-builder",
+    "dist:linux_and_windows": "tsc && vite build && electron-builder -wl",
+    "fixperms": "sudo chown -R $USER dist-electron release dist"
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
@@ -23,6 +28,7 @@
     "@types/styled-components": "5.1.26",
     "@typescript-eslint/eslint-plugin": "5.39.0",
     "@typescript-eslint/parser": "5.39.0",
+    "dotenv": "16.0.3",
     "electron-store": "8.1.0",
     "eslint": "8.24.0",
     "eslint-plugin-react": "7.31.8",

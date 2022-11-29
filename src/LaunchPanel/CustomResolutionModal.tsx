@@ -1,10 +1,10 @@
-import { primaryColor } from "@/colors";
+import { primaryColor } from "../colors";
 import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { TitleBarHighlighted, TitleBarImageButton, TitleBarImageButtonContainer } from "../Heading/Heading";
 import closePng from "/link/castlestory-images/close.png"
-import { Button } from "@/UI/Button";
+import { Button } from "../UI/Button";
 
 const ModalBackdrop = styled.div`
   position: fixed;
