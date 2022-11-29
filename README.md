@@ -4,27 +4,33 @@
 
 # Castle Story Custom Launcher
 
+## How to download
+
+Using [Releases](https://github.com/Danielduel/castle-story-custom-launcher/releases) tab
+pick correct version - `.exe` for Windows, `.AppImage` for Linux.
+
+At this moment - trying to launch game without exactly the same setup as mine will result in error message. This release is meant to check if all dependencies for clients are bundled correctly.
+
 ![Screenshot of 0.0.1](docs/ss.png?raw=true "Screenshot")
 
 ## Summary
 
 It is community-made Castle Story launcher with added features.
 
-It is available for
+Current build targets
 
 * Windows as portable version
 * Linux as AppImage
 
 *If you need build for Mac or any other format for Linux - please message me in GH issues or via Discord*
 
-Community links:
+### Community links
 
 * [Official Castle Story Discord](https://discord.gg/castlestory)
 
 ### Scope
 
-go to `SCOPE.md` for info
-[Scope](SCOPE.md)
+go to [Scope](SCOPE.md)
 
 ### Notes
 
