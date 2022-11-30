@@ -329,7 +329,7 @@ export const LaunchPanel = () => {
           }}
         />
       </LaunchPanelWrapper>
-      <PlayButton onClick={() => window.launcher.launch()} />
+      <PlayButton onClick={() => window.launcher.CastleStoryInstance_launch()} />
     </>
   )
 };

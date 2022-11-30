@@ -4,3 +4,8 @@ export type Resolution = {
   aspect: number;
   aspectLabel: string;
 };
+
+export type Check = {
+  exists: boolean;
+  access: boolean;
+};

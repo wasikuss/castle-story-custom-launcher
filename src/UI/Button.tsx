@@ -20,13 +20,41 @@ export const Button = styled.div`
   height: 100%;
 
   margin-left: 0.5rem;
-  padding: 0 0.5rem 0 0.5rem;
+  padding: 0.5rem;
   margin-top: -5px;
   box-shadow: 0 0 2px 0px black;
   background: ${primaryColor}aa;
 
   display: flex;
   align-items: center;
+
+  background: #FFFFFFCC;
+  border: 5px solid black;
+  box-shadow: 0 -5px 0px 0px #00000066 inset;
+
+  &:hover {
+    background: #FFFFFFEE;
+  }
+
+  ${heightButtonVariant}
+`;
+
+export const ButtonLink = styled.a`
+  text-decoration: none;
+  color: initial;
+
+  cursor: pointer;
+  height: 100%;
+
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  margin-top: -5px;
+  box-shadow: 0 0 2px 0px black;
+  background: ${primaryColor}aa;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   background: #FFFFFFCC;
   border: 5px solid black;

@@ -8,7 +8,9 @@ type LaunchParams = Parameters<typeof launch>;
 type IPCWrapperForFunction<F extends (...args: any[]) => any> = ((...args: Parameters<F>) => Promise<ReturnType<F>>);
 
 type Launcher = {
-  launch: IPCWrapperForFunction<() => void>;
+  CastleStoryInstance_launch: IPCWrapperForFunction<() => void>;
+  CastleStoryInstance_check: IPCWrapperForFunction<() => Check>;
+
   os_platform: IPCWrapperForFunction<typeof platform>;
   openExternal: IPCWrapperForFunction<typeof shell["openExternal"]>;
   getSupportedResolutions: IPCWrapperForFunction<() => Resolution[]>;

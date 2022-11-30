@@ -8,11 +8,13 @@ import {
 import { platform } from "os";
 import { MainWindowRef } from "../../shared/mainWindowRef";
 import type { IPCWrapperForFunction, Launcher } from "../../src/types";
+import { CastleStory } from "./CastleStory";
+import { store } from "./electron-store";
 import { getSupportedResolutins } from "./getSupportedResolutions";
-import { launchCastleStory } from "./launchCastleStory";
 
 enum IPC {
-  launch = "launch",
+  CastleStoryInstance_check = "CastleStoryInstance_check",
+  CastleStoryInstance_launch = "CastleStoryInstance_launch",
   os_platform = "os_platform",
   openExternal = "openExternal",
   getSupportedResolutions = "getSupportedResolutions",
@@ -48,24 +50,29 @@ const wrapWithIpc = <F extends (...args: any[]) => any>(name: IPC, func: F) => {
   ];
 };
 
-const triples = [
+const triples: [
+  IPC,
+  (...args: any[]) => any,
+  () => void
+][] = [
   wrapWithIpc(IPC.os_platform, platform),
   wrapWithIpc(IPC.openExternal, shell.openExternal),
   wrapWithIpc(IPC.getSupportedResolutions, getSupportedResolutins),
 ];
 
-const pushWindowBasedIpcs = (windowRef: MainWindowRef) => {
+const pushWindowBasedIpcs = (windowRef: MainWindowRef, CastleStoryInstance?: CastleStory) => {
   triples.push(wrapWithIpc(IPC.mainWindow_minimize, () => {
     windowRef.current.minimize();
   }));
   triples.push(wrapWithIpc(IPC.mainWindow_quit, () => {
     windowRef.current.close();
   }));
-  triples.push(wrapWithIpc(IPC.launch, launchCastleStory(windowRef)));
+  triples.push(wrapWithIpc(IPC.CastleStoryInstance_check, () => CastleStoryInstance.check()));
+  triples.push(wrapWithIpc(IPC.CastleStoryInstance_launch, () => CastleStoryInstance.launch(store)));
 }
 
-export const registerLauncherNamespace = (windowRef: MainWindowRef) => {
-  pushWindowBasedIpcs(windowRef);
+export const registerLauncherNamespace = (windowRef: MainWindowRef, CastleStoryInstance: CastleStory) => {
+  pushWindowBasedIpcs(windowRef, CastleStoryInstance);
   triples.forEach(([, , setupPart]) => setupPart());
 };
 
@@ -85,7 +92,8 @@ export const preload = () => {
     [name]: wrapper,
   }), {} as Launcher); // preloadChecks are making it legal to use "as" here
 
-  preloadCheck(launcherApi, "launch", "launcherApi");
+  preloadCheck(launcherApi, "CastleStoryInstance_check", "launcherApi");
+  preloadCheck(launcherApi, "CastleStoryInstance_launch", "launcherApi");
   preloadCheck(launcherApi, "os_platform", "launcherApi");
   preloadCheck(launcherApi, "openExternal", "launcherApi");
   preloadCheck(launcherApi, "getSupportedResolutions", "launcherApi");

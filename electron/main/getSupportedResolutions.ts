@@ -1,4 +1,4 @@
-import type { Resolution } from "../../shared/resolution";
+import type { Resolution } from "../../shared/types";
 
 const commonHeights = [
   768,

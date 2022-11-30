@@ -4,14 +4,21 @@
   <img src="docs/modding_community.png?raw=true" />
 </p>
 
-## How to download
+## Quickstart guide
 
 Using [Releases](https://github.com/Danielduel/castle-story-custom-launcher/releases) tab
-pick correct version - `.exe` for Windows, `.AppImage` for Linux.
+pick correct version:
+* Windows `.exe` 
+* Linux `.AppImage`
 
-Trying to launch game will result in error message.
-
-This release is meant to check if all dependencies for clients are bundled correctly.
+Launcher will work only if it is in game's folder.
+* Open Steam
+* Right click Castle Story in Library
+* Pick "Local Files" from left tab
+* Click "Browse"
+This folder is Castle Story directory, move the launcher here.
+Don't replace original launcher yet.
+You can't play "normal multiplayer", since it is not replacing original launcher yet.
 
 ![Screenshot of 0.0.1](docs/ss.png?raw=true "Screenshot")
 
@@ -32,7 +39,7 @@ Current build targets
 
 ### Scope
 
-go to [Scope](SCOPE.md)
+go to [Scope](docs/SCOPE.md)
 
 ### Notes
 
@@ -40,4 +47,13 @@ go to [Scope](SCOPE.md)
 
 ### Authors
 
-* [Daniel Mizerski](https://github.com/Danielduel)
+* [Daniel Mizerski](https://github.com/Danielduel) - Author
+
+### Testers
+
+Big thanks to people who report back feedback!
+* Monotony
+
+### Credits to 3rd party sources
+
+* <a href="https://www.flaticon.com/free-icons/external-link" title="external link icons">External link icons created by Bharat Icons - Flaticon</a>

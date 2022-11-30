@@ -5,6 +5,11 @@ import backgroundPng from "/link/castlestory-images/background.png"
 import { primaryColor } from "./colors";
 import { LaunchPanel } from "./LaunchPanel/LaunchPanel";
 import { Heading } from "./Heading/Heading";
+import { useQuery } from "@tanstack/react-query";
+import { Check } from "shared/types";
+import { CenterPanel } from "./UI/CenterPanel";
+import { ButtonLink } from "./UI/Button";
+import ExternalLink from "./UI/Icons/ExternalLink.png";
 
 const AppContainer = styled.div`
   position: fixed;
@@ -21,19 +26,6 @@ const AppContainer = styled.div`
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-`;
-
-const GameIsRunning = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  font-weight: bold;
-  padding: 2rem;
-  background: ${primaryColor};
-  border: 5px solid black;
-  box-shadow: 0 -5px 0px 0px #00000066 inset;
 `;
 
 const NewsPanel = styled.div`
@@ -91,7 +83,10 @@ const NewsPanelVersionTitle = styled.div`
 `;
 
 const App: React.FC = () => {
+  const { data: checkData } = useQuery<Check>(["CastleStoryInstance_check"], window.launcher.CastleStoryInstance_check);
   const [gameRunning, setGameRunning] = React.useState(false);
+
+  console.log(checkData);
 
   React.useEffect(() => {
     window.game.start(() => {
@@ -101,6 +96,67 @@ const App: React.FC = () => {
       setGameRunning(false);
     });
   }, [setGameRunning]);
+
+  if (!checkData) {
+    return (
+      <AppContainer>
+        <Heading />
+        <CenterPanel
+          title="Looking for the game..."
+        />
+      </AppContainer>
+    )
+  }
+
+  if (!checkData.exists) {
+    return (
+      <AppContainer>
+        <Heading />
+        <CenterPanel
+          title="We can't find your game"
+          description={`
+            Make sure that the launcher file is in the game's folder.
+            If launcher is in correct place - please get in contact with us.
+          `}
+        >
+          <ButtonLink
+            variant="medium"
+            target="_blank"
+            referrerPolicy="no-referrer"
+            rel="noopener noreferrer nofollow"
+            href="https://github.com/Danielduel/castle-story-custom-launcher/tree/main/docs/ISSUES.md"
+          >
+            <img src={ExternalLink} height="14"/>&nbsp;How to get help?
+          </ButtonLink>
+        </CenterPanel>
+      </AppContainer>
+    )
+  }
+
+  if (!checkData.access) {
+    return (
+      <AppContainer>
+        <Heading />
+        <CenterPanel
+          title="We can't access your game"
+          description={`
+            Looks like launcher is in correct place, but for some reason game can't be ran.
+            Please contact authors of the launcher.
+          `}
+        >
+          <ButtonLink
+            variant="medium"
+            target="_blank"
+            referrerPolicy="no-referrer"
+            rel="noopener noreferrer nofollow"
+            href="https://github.com/Danielduel/castle-story-custom-launcher/tree/main/docs/ISSUES.md"
+          >
+          <img src={ExternalLink} height="14"/>&nbsp;How to get help?
+          </ButtonLink>
+        </CenterPanel>
+      </AppContainer>
+    )
+  }
 
   if (!gameRunning) {
     return (
@@ -121,9 +177,9 @@ const App: React.FC = () => {
   return (
     <AppContainer>
       <Heading />
-      <GameIsRunning>
-        Game is running
-      </GameIsRunning>
+      <CenterPanel
+        title="Game is running"
+      />
     </AppContainer>
   )
 }

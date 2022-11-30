@@ -12,9 +12,11 @@ process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, "../public");
+import { CastleStory } from "./CastleStory";
 
 import { registerMainStoreEvents } from "./electron-store";
 import { windowRef } from "./windowRef";
+const CastleStoryInstance = new CastleStory(windowRef);
 registerMainStoreEvents();
 
 import { app, BrowserWindow, ipcMain, shell } from "electron";
@@ -22,7 +24,7 @@ import { release } from "os";
 import { join } from "path";
 
 import { registerLauncherNamespace } from "./registerLauncherNamespace";
-registerLauncherNamespace(windowRef);
+registerLauncherNamespace(windowRef, CastleStoryInstance);
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
