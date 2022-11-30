@@ -47,11 +47,12 @@ go to [Scope](docs/SCOPE.md)
 
 ### Authors
 
-* [Daniel Mizerski](https://github.com/Danielduel) - Author
+* [Daniel Mizerski](https://github.com/Danielduel) - Owner
 
 ### Testers
 
 Big thanks to people who report back feedback!
+
 * Monotony
 
 ### Credits to 3rd party sources
