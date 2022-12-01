@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import castleStoryMp4 from "/link/castlestory-video/mp4.mp4"
 import backgroundPng from "/link/castlestory-images/background.png"
 import { primaryColor } from "./colors";
 import { LaunchPanel } from "./LaunchPanel/LaunchPanel";
@@ -36,35 +35,17 @@ const NewsPanel = styled.div`
   border: 5px solid black;
   box-shadow: 0 -15px 0px 0px #00000066 inset;
 
-  height: calc(100vh - 400px);
   width: 400px;
 
   position: fixed;
   left: 30px;
-  bottom: 200px;
+  top: 200px;
 
   box-sizing: border-box;
   padding: 15px 15px 30px 15px;
 
   display: flex;
   flex-direction: column;
-`;
-const NewsPanelBleed = styled.div`
-  position: absolute;
-  box-sizing: border-box;
-  width: calc(100% + 30px);
-  top: 70px;
-  left: -15px; /* Counting in the border */
-  border: 5px solid black;
-  overflow: hidden;
-`;
-const NewsPanelVideo = styled.video`
-  width: 100%;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  display: block;
 `;
 
 const NewsPanelVersionLabel = styled.div`
@@ -80,6 +61,11 @@ const NewsPanelVersionTitle = styled.div`
   letter-spacing: 0.5px;
   margin-bottom: 10px;
   width: 100%;
+`;
+
+const DebugData = styled.code`
+  margin-bottom: 1rem;
+  background-color: white;
 `;
 
 const App: React.FC = () => {
@@ -119,6 +105,9 @@ const App: React.FC = () => {
             If launcher is in correct place - please get in contact with us.
           `}
         >
+          <DebugData>
+            {checkData.scannedFile}
+          </DebugData>
           <ButtonLink
             variant="medium"
             target="_blank"
@@ -144,6 +133,9 @@ const App: React.FC = () => {
             Please contact authors of the launcher.
           `}
         >
+          <DebugData>
+            {checkData.scannedFile}
+          </DebugData>
           <ButtonLink
             variant="medium"
             target="_blank"
@@ -165,9 +157,6 @@ const App: React.FC = () => {
         <NewsPanel>
           <NewsPanelVersionLabel>Our latest update is</NewsPanelVersionLabel>
           <NewsPanelVersionTitle>Version 1.1</NewsPanelVersionTitle>
-          <NewsPanelBleed>
-            <NewsPanelVideo src={castleStoryMp4} controls />
-          </NewsPanelBleed>
         </NewsPanel>
         <LaunchPanel />
       </AppContainer>

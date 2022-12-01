@@ -1,10 +1,17 @@
 import { config } from "dotenv";
+import { join } from "path";
+import { realpathSync } from "original-fs";
 
 if (!app.isPackaged) {
   config();
 }
 
-process.env.CASTLE_STORY_DIRECTORY = process.env.CASTLE_STORY_DIRECTORY || ".";
+process.env.CASTLE_STORY_DIRECTORY = (
+      process.env.CASTLE_STORY_DIRECTORY
+  ||  process.env.PORTABLE_EXECUTABLE_DIR
+  ||  realpathSync(".")
+);
+
 process.env.DIST_ELECTRON = app.isPackaged
   ? join(__dirname, "../..")
   : join(__dirname, "..");
@@ -12,6 +19,9 @@ process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : join(process.env.DIST_ELECTRON, "../public");
+
+console.log(process.env.CASTLE_STORY_DIRECTORY);
+
 import { CastleStory } from "./CastleStory";
 
 import { registerMainStoreEvents } from "./electron-store";
@@ -21,7 +31,6 @@ registerMainStoreEvents();
 
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import { release } from "os";
-import { join } from "path";
 
 import { registerLauncherNamespace } from "./registerLauncherNamespace";
 registerLauncherNamespace(windowRef, CastleStoryInstance);

@@ -16,24 +16,27 @@ export class CastleStory {
     return false;
   }
 
-  check = (): Check => { 
+  check = (): Check => {
+    const path = this.getFullPath();
     try {
-      const path = this.getFullPath();
       if (existsSync(path)) {
         accessSync(path, constants.X_OK);
       } else {
         return {
+          scannedFile: path,
           exists: false,
           access: false
         } as const;
       }
     } catch (err) {
       return {
+        scannedFile: path,
         exists: true,
         access: false
       } as const;
     }
     return {
+      scannedFile: path,
       exists: true,
       access: true
     } as const;

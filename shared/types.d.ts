@@ -6,6 +6,7 @@ export type Resolution = {
 };
 
 export type Check = {
+  scannedFile: string;
   exists: boolean;
   access: boolean;
 };
