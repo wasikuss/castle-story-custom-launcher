@@ -20,7 +20,7 @@ This folder is Castle Story directory, move the launcher here.
 Don't replace original launcher yet.
 You can't play "normal multiplayer", since it is not replacing original launcher yet.
 
-![Screenshot of 0.0.1](docs/ss.png?raw=true "Screenshot")
+![Screenshot of 0.0.3](docs/ss/0.0.3.png?raw=true "Screenshot")
 
 ## Summary
 
