@@ -33,7 +33,9 @@ import { app, BrowserWindow, ipcMain, shell } from "electron";
 import { release } from "os";
 
 import { registerLauncherNamespace } from "./registerLauncherNamespace";
-registerLauncherNamespace(windowRef, CastleStoryInstance);
+import { ConfigFile } from "./ConfigFile";
+const configFile = new ConfigFile();
+registerLauncherNamespace(windowRef, CastleStoryInstance, configFile);
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();

@@ -33,6 +33,35 @@ Current build targets
 
 *If you need build for Mac or any other format for Linux - please message me in GH issues or via Discord*
 
+### Features
+
+#### Autostart (skipping launcher)
+
+Autostart allows you to skip the launcher without fully removing it.
+
+It works in 3 modes:
+* Never - disables this feature
+* Always - launcher will be skipped if game wasn't started in last 5 minutes
+* Always (force) - launcher will be skipped
+
+You can override autostart using config, the field is called `DISABLE_AUTOSTART`.
+
+### Config file
+
+Config file is treated as the override and has higer priority than what you've set in the launcher.
+
+It is not created automatically.
+
+It is expected to be in your Castle Story directory and be named `launcher.properties` - a simple text file named `launcher` with `properties` extension.
+It is parsed using [dotenv library](https://github.com/motdotla/dotenv).
+
+Schema
+Field name              | Description                 | Expected values | Default value
+---                     | ---                         | ---             | ---
+DISABLE_AUTOSTART       | Overrides Autostart feature | `true` `false`  | `false`
+
+Note that `Default value` is a value that is assumed either if config doesn't exist or value entry doesn't exist.
+
 ### Community links
 
 * [Official Castle Story Discord](https://discord.gg/castlestory)

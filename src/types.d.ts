@@ -1,6 +1,7 @@
 import { shell } from "electron";
 import { platform } from "node:os";
 import { Resolution } from "shared/resolution";
+import { ConfigFileT } from "shared/types";
 
 type LaunchParams = Parameters<typeof launch>;
 
@@ -22,6 +23,7 @@ type Launcher = {
 declare global {
   interface Window {
     launcher: Launcher;
+    config: ConfigFileT;
     electron: {
       store: {
         get: <K extends keyof StoreType>(key: K) => StoreType[K];

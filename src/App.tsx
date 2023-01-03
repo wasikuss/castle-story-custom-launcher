@@ -7,8 +7,9 @@ import { Heading } from "./Heading/Heading";
 import { useQuery } from "@tanstack/react-query";
 import { Check } from "shared/types";
 import { CenterPanel } from "./UI/CenterPanel";
-import { ButtonLink } from "./UI/Button";
+import { Button, ButtonLink } from "./UI/Button";
 import ExternalLink from "./UI/Icons/ExternalLink.png";
+import { getShouldAutostart } from "./getShouldAutostart";
 
 const AppContainer = styled.div`
   position: fixed;
@@ -71,8 +72,9 @@ const DebugData = styled.code`
 const App: React.FC = () => {
   const { data: checkData } = useQuery<Check>(["CastleStoryInstance_check"], window.launcher.CastleStoryInstance_check);
   const [gameRunning, setGameRunning] = React.useState(false);
-
-  console.log(checkData);
+  const [shouldAutostartErrorDismissed, setAutostartErrorDismissed] = React.useState(false);
+  const shouldAutostart = getShouldAutostart();
+  console.log("Config", window.config);
 
   React.useEffect(() => {
     window.game.start(() => {
@@ -148,6 +150,35 @@ const App: React.FC = () => {
         </CenterPanel>
       </AppContainer>
     )
+  }
+
+  if (shouldAutostart.prevent && shouldAutostart.error && !shouldAutostartErrorDismissed) {
+    return (
+      <AppContainer>
+        <Heading />
+        <CenterPanel
+          title="Autostart got ignored"
+          description={shouldAutostart.message.join("\n")}
+        >
+          <Button center variant="medium" onClick={() => setAutostartErrorDismissed(true)}>
+            Fine, show me the launcher now
+          </Button>
+        </CenterPanel>
+      </AppContainer>
+    );
+  }
+
+  if (!shouldAutostart.prevent) {
+    window.launcher.CastleStoryInstance_launch();
+    console.log("Autostarting");
+    return (
+      <AppContainer>
+        <Heading />
+        <CenterPanel
+          title="Autostarting..."
+        />
+      </AppContainer>
+    );
   }
 
   if (!gameRunning) {

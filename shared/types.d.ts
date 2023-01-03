@@ -5,6 +5,10 @@ export type Resolution = {
   aspectLabel: string;
 };
 
+export type ConfigFileT = {
+  DISABLE_AUTOSTART: boolean;
+}
+
 export type Check = {
   scannedFile: string;
   exists: boolean;

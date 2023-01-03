@@ -9,8 +9,11 @@ import type { Check } from "../../shared/types";
 
 export class CastleStory {
   gameHandle: ReturnType<typeof spawn> | null = null;
+  starting = false;
 
-  constructor (public windowRef: MainWindowRef) {}
+  constructor (
+    public windowRef: MainWindowRef
+  ) {}
   
   isModded = () => {
     return false;
@@ -91,42 +94,52 @@ export class CastleStory {
   }
 
   launch (store: Store<StoreType>) {
-    const isModded = false;
-    const platform = OS.platform();
-    const castleStoryPath = this.getPath();
-    const executableName = this.getExecutableName();
-    const runParams = this.getRunParams(store);
-    const cwd = castleStoryPath;
+    if (!this.starting) {
+      this.starting = true;
+      const isModded = false;
+      const platform = OS.platform();
+      const castleStoryPath = this.getPath();
+      const executableName = this.getExecutableName();
+      const runParams = this.getRunParams(store);
+      const cwd = castleStoryPath;
 
-    try {
-      if (platform === "linux" && isModded) {
-        this.gameHandle = spawn(
-          "/bin/sh",
-          [
-            executableName,
-            "", // skipping the first parameter for BepInEx
-            ...runParams
-          ],
-          {
-            detached: true,
-            cwd
-          }
-        );
-      } else {
-        this.gameHandle = spawn(
-          `${cwd}/${executableName}`,
-          runParams,
-          {
-            detached: true,
-            cwd
-          }
-        );
+      try {
+        if (platform === "linux" && isModded) {
+          this.gameHandle = spawn(
+            "/bin/sh",
+            [
+              executableName,
+              "", // skipping the first parameter for BepInEx
+              ...runParams
+            ],
+            {
+              detached: true,
+              cwd
+            }
+          );
+        } else {
+          this.gameHandle = spawn(
+            `${cwd}/${executableName}`,
+            runParams,
+            {
+              detached: true,
+              cwd
+            }
+          );
+        }
+
+        this.gameHandle.on("spawn", () => {
+          store.set("lastGameStartupTime", Date.now());
+          this.windowRef.current.webContents.send("game-start");
+          // quit launcher after 2 seconds
+          setTimeout(() => {
+            process.exit();
+          }, 2000);
+        });
+        this.gameHandle.on("close", () => this.windowRef.current.webContents.send("game-stop"));
+      } catch (err) {
+        console.error("Not being able to get handle is expected", err);
       }
-
-      this.gameHandle.on("spawn", () => this.windowRef.current.webContents.send("game-start"));
-      this.gameHandle.on("close", () => this.windowRef.current.webContents.send("game-stop"));
-    } catch (err) {
-      console.error("Not being able to get handle is expected", err);
     }
   }
 }

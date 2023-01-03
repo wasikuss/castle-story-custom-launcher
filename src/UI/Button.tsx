@@ -6,6 +6,7 @@ type ButtonVariant = "medium";
 
 type ButtonProps = {
   variant: ButtonVariant;
+  center?: boolean;
 };
 
 const heightButtonVariant = ({ variant }: ButtonProps) => match(variant)
@@ -14,6 +15,15 @@ const heightButtonVariant = ({ variant }: ButtonProps) => match(variant)
     width: initial;
   `)
   .exhaustive();
+
+const centerButton = ({ center }: ButtonProps) => match(center)
+  .with(true, () => css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `)
+  .otherwise(() => css`
+  `);
 
 export const Button = styled.div`
   cursor: pointer;
@@ -37,6 +47,7 @@ export const Button = styled.div`
   }
 
   ${heightButtonVariant}
+  ${centerButton}
 `;
 
 export const ButtonLink = styled.a`

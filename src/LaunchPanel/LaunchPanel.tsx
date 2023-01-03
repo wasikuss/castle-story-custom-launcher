@@ -318,14 +318,15 @@ export const LaunchPanel = () => {
           }}
         />
         <LaunchPanelField
-          label="Skip launcher (disabled)"
+          label="Autostart"
           expanded={expanded}
           setExpanded={setExpanded}
           selectedOption={skipLauncher}
           setSelectedOption={setSkipLauncher}
           options={{
             "always": "Always",
-            "never": "Never"
+            "never": "Never",
+            "always_force": "Always (force)"
           }}
         />
       </LaunchPanelWrapper>

@@ -9,6 +9,7 @@ import { platform } from "os";
 import { MainWindowRef } from "../../shared/mainWindowRef";
 import type { IPCWrapperForFunction, Launcher } from "../../src/types";
 import { CastleStory } from "./CastleStory";
+import { ConfigFile } from "./ConfigFile";
 import { store } from "./electron-store";
 import { getSupportedResolutins } from "./getSupportedResolutions";
 
@@ -71,9 +72,10 @@ const pushWindowBasedIpcs = (windowRef: MainWindowRef, CastleStoryInstance?: Cas
   triples.push(wrapWithIpc(IPC.CastleStoryInstance_launch, () => CastleStoryInstance.launch(store)));
 }
 
-export const registerLauncherNamespace = (windowRef: MainWindowRef, CastleStoryInstance: CastleStory) => {
+export const registerLauncherNamespace = (windowRef: MainWindowRef, CastleStoryInstance: CastleStory, configFile: ConfigFile) => {
   pushWindowBasedIpcs(windowRef, CastleStoryInstance);
   triples.forEach(([, , setupPart]) => setupPart());
+  ipcMain.handle("__getConfigFileContent", () => configFile.content)
 };
 
 const preloadCheck = <O extends Record<string, unknown>, K extends keyof O>(
@@ -85,7 +87,7 @@ const preloadCheck = <O extends Record<string, unknown>, K extends keyof O>(
   throw new Error(`${key as string} is not a member of ${scannedName}`);
 };
 
-export const preload = () => {
+export const preload = async () => {
   pushWindowBasedIpcs({ current: null });
   const launcherApi: Launcher = triples.reduce((prev, [name, wrapper]) => ({
     ...prev,
@@ -101,4 +103,7 @@ export const preload = () => {
   preloadCheck(launcherApi, "mainWindow_quit", "launcherApi");
 
   contextBridge.exposeInMainWorld("launcher", launcherApi);
+
+  const configFileContent = await ipcRenderer.invoke("__getConfigFileContent");
+  contextBridge.exposeInMainWorld("config", configFileContent);
 };
