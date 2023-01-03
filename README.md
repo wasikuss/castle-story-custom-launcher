@@ -17,8 +17,6 @@ Launcher will work only if it is in game's folder.
 * Pick "Local Files" from left tab
 * Click "Browse"
 This folder is Castle Story directory, move the launcher here.
-Don't replace original launcher yet.
-You can't play "normal multiplayer", since it is not replacing original launcher yet.
 
 ![Screenshot of 0.0.3](docs/ss/0.0.3.png?raw=true "Screenshot")
 
@@ -30,6 +28,10 @@ Current build targets
 
 * Windows as portable version
 * Linux as AppImage
+
+Windows build will warn you about unknown developer, ignore that please -
+I don't have Microsoft key for signing up applications.
+It shouldn't ask for administrator permissions - report a bug if it will happen and don't run the application.
 
 *If you need build for Mac or any other format for Linux - please message me in GH issues or via Discord*
 
