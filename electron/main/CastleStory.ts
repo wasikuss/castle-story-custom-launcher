@@ -109,7 +109,7 @@ export class CastleStory {
             "/bin/sh",
             [
               executableName,
-              "", // skipping the first parameter for BepInEx
+              ...(process.argv.length ? process.argv : [""]),
               ...runParams
             ],
             {
@@ -120,7 +120,10 @@ export class CastleStory {
         } else {
           this.gameHandle = spawn(
             `${cwd}/${executableName}`,
-            runParams,
+            [
+              ...process.argv,
+              ...runParams
+            ],
             {
               detached: true,
               cwd
